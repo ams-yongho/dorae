@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:claude.ai)",
+      "Read(//Users/yonghokim/Documents/GitHub/amass/dorae/**)",
+      "Bash(pnpm create *)",
+      "Bash(mkdir -p /tmp/dorae-backup)",
+      "Bash(cp -r .serena /tmp/dorae-backup/)",
+      "Bash(cp README.md /tmp/dorae-backup/)",
+      "Bash(cp -r /tmp/dorae-backup/.serena .)",
+      "Bash(cp /tmp/dorae-backup/README.md .)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm approve-builds *)",
+      "Bash(pnpm install *)"
+    ]
+  }
+}
