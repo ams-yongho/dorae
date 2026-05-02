@@ -1,14 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { slack } from '@/lib/slack'
+import { getSlackClient, hasSlackBotToken } from '@/lib/slack'
 import { auth } from '@/lib/auth'
 
 export async function GET(req: NextRequest) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  if (!hasSlackBotToken()) {
+    return NextResponse.json(
+      { members: [], error: 'SLACK_BOT_TOKEN이 설정되지 않았습니다' },
+      { status: 503 }
+    )
+  }
+
   const q = req.nextUrl.searchParams.get('q') ?? ''
 
   try {
+    const slack = getSlackClient()
     const res = await slack.users.list({ limit: 200 })
     const members = (res.members ?? [])
       .filter(
