@@ -147,6 +147,23 @@ async function sendAndLog(params: {
 
   try {
     await sendDM(employee.slackUserId, message)
+  } catch (sendErr) {
+    await db.notificationLog.create({
+      data: {
+        userId: employee.id,
+        ruleId: rule.id,
+        triggerDate,
+        daysBefore,
+        status: 'FAILED',
+        messageContent: message,
+        errorMessage: String(sendErr),
+      },
+    })
+    result.failed++
+    return
+  }
+
+  try {
     await db.notificationLog.create({
       data: {
         userId: employee.id,
@@ -158,19 +175,8 @@ async function sendAndLog(params: {
         messageContent: message,
       },
     })
-    result.sent++
-  } catch (err) {
-    await db.notificationLog.create({
-      data: {
-        userId: employee.id,
-        ruleId: rule.id,
-        triggerDate,
-        daysBefore,
-        status: 'FAILED',
-        messageContent: message,
-        errorMessage: String(err),
-      },
-    })
-    result.failed++
+  } catch {
+    console.error(`Failed to log sent notification for employee ${employee.id}`)
   }
+  result.sent++
 }
