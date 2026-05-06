@@ -28,7 +28,11 @@ function getEventDate(employee: User, type: string, today: Date): Date | null {
 
   if (type === 'CHECKUP') {
     if (!employee.lastCheckupDate) return null
-    return addMonths(employee.lastCheckupDate, employee.checkupCycleMonths)
+    let next = addMonths(employee.lastCheckupDate, employee.checkupCycleMonths)
+    while (next < today) {
+      next = addMonths(next, employee.checkupCycleMonths)
+    }
+    return next
   }
 
   if (type === 'LEAVE_EXPIRY') {
