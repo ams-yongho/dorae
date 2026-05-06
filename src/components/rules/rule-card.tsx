@@ -24,6 +24,7 @@ export function RuleCard({ rule }: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [isEnabled, setIsEnabled] = useState(rule.isEnabled)
 
   const [daysInput, setDaysInput] = useState(rule.daysBefore.join(', '))
   const [template, setTemplate] = useState(rule.messageTemplate)
@@ -32,8 +33,13 @@ export function RuleCard({ rule }: Props) {
   )
 
   function handleToggle() {
+    const next = !isEnabled
+    setIsEnabled(next)
     startTransition(async () => {
-      await toggleRule(rule.id, !rule.isEnabled)
+      const result = await toggleRule(rule.id, next)
+      if (!result.success) {
+        setIsEnabled(!next)
+      }
     })
   }
 
@@ -78,16 +84,16 @@ export function RuleCard({ rule }: Props) {
             onClick={handleToggle}
             disabled={isPending}
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-              rule.isEnabled ? 'bg-coral' : 'bg-border'
+              isEnabled ? 'bg-coral' : 'bg-border'
             }`}
           >
             <span
               className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${
-                rule.isEnabled ? 'translate-x-4' : 'translate-x-1'
+                isEnabled ? 'translate-x-4' : 'translate-x-1'
               }`}
             />
           </button>
-          <span className="text-xs text-stone">{rule.isEnabled ? '활성' : '비활성'}</span>
+          <span className="text-xs text-stone">{isEnabled ? '활성' : '비활성'}</span>
         </div>
       </div>
 
