@@ -11,7 +11,14 @@
       "Bash(cp /tmp/dorae-backup/README.md .)",
       "Bash(pnpm add *)",
       "Bash(pnpm approve-builds *)",
-      "Bash(pnpm install *)"
+      "Bash(pnpm install *)",
+      "Bash(git -C /Users/yonghokim/Documents/GitHub/amass/dorae add docs/superpowers/specs/2026-05-06-rules-and-scheduler-design.md)",
+      "Bash(git -C /Users/yonghokim/Documents/GitHub/amass/dorae commit -m \"docs: add rules and scheduler design spec\")",
+      "Bash(git -C /Users/yonghokim/Documents/GitHub/amass/dorae add docs/superpowers/plans/2026-05-06-rules-and-scheduler.md)",
+      "Bash(git -C /Users/yonghokim/Documents/GitHub/amass/dorae commit -m \"docs: add rules and scheduler implementation plan\")",
+      "Bash(npx tsc *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
