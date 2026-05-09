@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { DatePicker } from '@/components/ui/date-picker'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -12,6 +13,16 @@ import type { User } from '@prisma/client'
 interface Props {
   employee?: User
 }
+
+const CHECKUP_CYCLE_ITEMS = [
+  { value: '12', label: '12개월 (매년)' },
+  { value: '24', label: '24개월 (격년)' },
+]
+
+const LEAVE_BASIS_ITEMS = [
+  { value: 'CALENDAR', label: '달력 연도 (1/1 ~ 12/31)' },
+  { value: 'HIRE_DATE', label: '입사일 기준' },
+]
 
 export function EmployeeForm({ employee }: Props) {
   const router = useRouter()
@@ -59,61 +70,69 @@ export function EmployeeForm({ employee }: Props) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="birthday">생일</Label>
-          <Input
+          <DatePicker
             id="birthday"
             name="birthday"
-            type="date"
-            defaultValue={employee?.birthday?.toISOString().slice(0, 10)}
+            defaultValue={employee?.birthday}
             required
-            className="border-border font-mono"
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="hireDate">입사일</Label>
-          <Input
+          <DatePicker
             id="hireDate"
             name="hireDate"
-            type="date"
-            defaultValue={employee?.hireDate?.toISOString().slice(0, 10)}
+            defaultValue={employee?.hireDate}
             required
-            className="border-border font-mono"
           />
         </div>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="lastCheckupDate">마지막 건강검진일</Label>
-        <Input
+        <DatePicker
           id="lastCheckupDate"
           name="lastCheckupDate"
-          type="date"
-          defaultValue={employee?.lastCheckupDate?.toISOString().slice(0, 10)}
-          className="border-border font-mono"
+          defaultValue={employee?.lastCheckupDate}
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="checkupCycleMonths">건강검진 주기</Label>
-        <Select name="checkupCycleMonths" defaultValue={String(employee?.checkupCycleMonths ?? 12)}>
-          <SelectTrigger className="border-border">
+        <Select
+          name="checkupCycleMonths"
+          defaultValue={String(employee?.checkupCycleMonths ?? 12)}
+          items={CHECKUP_CYCLE_ITEMS}
+        >
+          <SelectTrigger id="checkupCycleMonths" className="border-border">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="12">12개월 (매년)</SelectItem>
-            <SelectItem value="24">24개월 (격년)</SelectItem>
+            {CHECKUP_CYCLE_ITEMS.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="leaveYearBasis">연차 회계연도</Label>
-        <Select name="leaveYearBasis" defaultValue={employee?.leaveYearBasis ?? 'CALENDAR'}>
-          <SelectTrigger className="border-border">
+        <Select
+          name="leaveYearBasis"
+          defaultValue={employee?.leaveYearBasis ?? 'CALENDAR'}
+          items={LEAVE_BASIS_ITEMS}
+        >
+          <SelectTrigger id="leaveYearBasis" className="border-border">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="CALENDAR">달력 연도 (1/1 ~ 12/31)</SelectItem>
-            <SelectItem value="HIRE_DATE">입사일 기준</SelectItem>
+            {LEAVE_BASIS_ITEMS.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
