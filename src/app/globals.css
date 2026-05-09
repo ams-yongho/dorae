@@ -13,6 +13,26 @@
   --color-coral-light: #D9917A;
   --color-coral-dark: #B5684E;
 
+  /* shadcn semantic tokens (mapped to project palette) */
+  --color-background: #F5F1EB;
+  --color-foreground: #2C1810;
+  --color-popover: #FAF7F1;
+  --color-popover-foreground: #2C1810;
+  --color-card: #FAF7F1;
+  --color-card-foreground: #2C1810;
+  --color-muted: #F2EBDC;
+  --color-muted-foreground: #8B7E6A;
+  --color-accent: #F2EBDC;
+  --color-accent-foreground: #2C1810;
+  --color-input: #E8DFD0;
+  --color-ring: #CC785C;
+  --color-primary: #CC785C;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #F2EBDC;
+  --color-secondary-foreground: #2C1810;
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
+
   /* Font families */
   --font-fraunces: 'Fraunces', serif;
   --font-inter-tight: 'Inter Tight', sans-serif;
@@ -26,4 +46,26 @@
     font-family: var(--font-inter-tight);
     -webkit-font-smoothing: antialiased;
   }
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-stone) 50%, transparent) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--color-stone) 50%, transparent);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--color-stone) 70%, transparent);
 }
