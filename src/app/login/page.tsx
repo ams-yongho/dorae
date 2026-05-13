@@ -1,12 +1,40 @@
+import { redirect } from 'next/navigation'
+import { AuthError } from 'next-auth'
 import { signIn } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 
-async function slackSignIn() {
-  'use server'
-  await signIn('slack')
+const ERROR_MESSAGES: Record<string, string> = {
+  AccessDenied: '관리자 권한이 없는 계정입니다. 관리자에게 문의하세요.',
+  Configuration: '서버 설정 오류입니다. 관리자에게 문의하세요.',
+  Verification: '인증에 실패했습니다. 다시 시도해주세요.',
+  default: '로그인 중 오류가 발생했습니다. 다시 시도해주세요.',
 }
 
-export default function LoginPage() {
+async function slackSignIn() {
+  'use server'
+  try {
+    await signIn('slack', { redirectTo: '/dashboard' })
+  } catch (error) {
+    // NextAuth 자체 에러(예: 화이트리스트 외 사용자)는 /login?error=...로 안내
+    if (error instanceof AuthError) {
+      redirect(`/login?error=${error.type}`)
+    }
+    // NEXT_REDIRECT는 정상 흐름 — 반드시 re-throw
+    throw error
+  }
+}
+
+type LoginPageProps = {
+  searchParams: Promise<{ error?: string }>
+}
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams
+  const errorKey = params.error
+  const errorMessage = errorKey
+    ? (ERROR_MESSAGES[errorKey] ?? ERROR_MESSAGES.default)
+    : null
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-cream px-4">
       <div className="w-full max-w-sm bg-paper border border-border rounded-2xl p-8 shadow-sm space-y-8">
@@ -14,6 +42,11 @@ export default function LoginPage() {
           <h1 className="font-fraunces text-3xl text-ink font-semibold">도래</h1>
           <p className="text-stone text-sm">직원 도래일 알림 서비스</p>
         </div>
+        {errorMessage && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+            {errorMessage}
+          </div>
+        )}
         <form action={slackSignIn}>
           <Button
             type="submit"
