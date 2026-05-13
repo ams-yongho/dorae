@@ -2,7 +2,8 @@ import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 
 export default auth((req) => {
-  const isLoggedIn = !!req.auth
+  // invalid 토큰은 session.user.email이 비어있음 → 로그아웃 상태로 간주
+  const isLoggedIn = !!req.auth?.user?.email
   const isLoginPage = req.nextUrl.pathname === '/login'
   const isApiAuth = req.nextUrl.pathname.startsWith('/api/auth')
   const isCron = req.nextUrl.pathname.startsWith('/api/cron')
