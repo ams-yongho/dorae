@@ -8,6 +8,7 @@ import {
   Bell,
   Send,
   ScrollText,
+  UserCog,
 } from 'lucide-react'
 
 const navItems = [
@@ -16,6 +17,7 @@ const navItems = [
   { href: '/rules', label: '알림 규칙', icon: Bell },
   { href: '/send', label: '수동 발송', icon: Send },
   { href: '/logs', label: '발송 이력', icon: ScrollText },
+  { href: '/admins', label: '관리자', icon: UserCog },
 ]
 
 export function Sidebar() {

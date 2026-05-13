@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, Users, Bell, Send, ScrollText } from 'lucide-react'
+import { LayoutDashboard, Users, Bell, Send, ScrollText, UserCog } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: '대시보드', icon: LayoutDashboard },
@@ -10,6 +10,7 @@ const navItems = [
   { href: '/rules', label: '규칙', icon: Bell },
   { href: '/send', label: '발송', icon: Send },
   { href: '/logs', label: '이력', icon: ScrollText },
+  { href: '/admins', label: '관리자', icon: UserCog },
 ]
 
 export function MobileNav() {
