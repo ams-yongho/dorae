@@ -115,3 +115,10 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model NotificationSettings {
+  id         String   @id @default("singleton")
+  sendHour   Int      @default(9)
+  sendMinute Int      @default(0)
+  updatedAt  DateTime @updatedAt
+}
