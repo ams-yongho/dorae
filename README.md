@@ -2,6 +2,33 @@
 
 알리미
 
+## 빠른 시작
+
+```bash
+# 1. 의존성 설치 (postinstall에서 prisma generate 자동 실행)
+pnpm install
+
+# 2. 환경변수 준비
+cp .env.local.example .env.local
+# .env.local 열어서 DATABASE_URL, SLACK_*, NEXTAUTH_SECRET, ADMIN_EMAILS, CRON_SECRET 채우기
+
+# 3. DB 셋업 (Postgres가 떠 있어야 함)
+pnpm db:setup    # prisma migrate dev + seed 한번에
+
+# 4. 개발 서버
+pnpm dev
+```
+
+### DB 관련 스크립트
+
+| 명령 | 동작 |
+|---|---|
+| `pnpm db:setup` | 마이그레이션 + 시드 (최초 1회) |
+| `pnpm db:migrate` | 마이그레이션만 적용 |
+| `pnpm db:seed` | `NotificationRule` 시드 재실행 |
+| `pnpm db:studio` | Prisma Studio 열기 |
+| `pnpm db:reset` | DB 리셋 후 재마이그레이트 + 재시드 |
+
 ## 관리자 권한
 
 관리자 권한은 DB의 `AdminUser` 테이블에서 관리되며, 로그인한 관리자가 `/admins`
