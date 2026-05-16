@@ -3,6 +3,12 @@ import { PrismaClient } from '@prisma/client'
 const db = new PrismaClient()
 
 async function main() {
+  await db.notificationSettings.upsert({
+    where: { id: 'singleton' },
+    update: {},
+    create: { id: 'singleton', sendHour: 9, sendMinute: 0 },
+  })
+
   await db.notificationRule.upsert({
     where: { id: 'rule-birthday' },
     update: {},
