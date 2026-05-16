@@ -1,6 +1,8 @@
 import { addMonths, differenceInDays, startOfDay } from 'date-fns'
 import { db } from '@/lib/db'
 import { sendDM } from '@/lib/slack'
+import { getNotificationSettings } from '@/lib/settings'
+import { isInWindow } from '@/lib/notify-window'
 import type { User, NotificationRule } from '@prisma/client'
 
 export interface NotifyResult {
@@ -50,9 +52,15 @@ function formatKoDate(date: Date): string {
   return `${date.getMonth() + 1}월 ${date.getDate()}일`
 }
 
-export async function runNotifications(): Promise<NotifyResult> {
-  const today = startOfDay(new Date())
+export async function runNotifications(now: Date = new Date()): Promise<NotifyResult> {
   const result: NotifyResult = { sent: 0, failed: 0, skipped: 0 }
+
+  const settings = await getNotificationSettings()
+  if (!isInWindow(now, settings.sendHour, settings.sendMinute)) {
+    return result
+  }
+
+  const today = startOfDay(now)
 
   const [rules, employees] = await Promise.all([
     db.notificationRule.findMany({ where: { isEnabled: true } }),

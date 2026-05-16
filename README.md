@@ -50,3 +50,12 @@ pnpm dev
 `/admins`에서 관리자를 삭제하면, 해당 사용자의 기존 JWT 세션은 다음 요청 시
 즉시 무효화되어 자동 로그아웃됩니다 (NextAuth `jwt` 콜백이 매 요청마다
 DB를 재검증하기 때문).
+
+## 크론 트리거
+
+`/api/cron/notify` 엔드포인트를 **매 15분(`*/15 * * * *`)** 주기로 호출하도록 외부 스케줄러(Vercel Cron 등)에 설정합니다. 관리자가 `/rules` 페이지에서 지정한 **발송 시각(HH:MM, KST)**의 15분 윈도우 안에 들어온 호출만 실제 메시지를 발송합니다. 그 외 호출은 즉시 무시됩니다.
+
+```bash
+curl -X POST https://<your-host>/api/cron/notify \
+  -H "Authorization: Bearer $CRON_SECRET"
+```
