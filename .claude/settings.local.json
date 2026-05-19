@@ -18,7 +18,13 @@
       "Bash(git -C /Users/yonghokim/Documents/GitHub/amass/dorae commit -m \"docs: add rules and scheduler implementation plan\")",
       "Bash(npx tsc *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(pg_isready -h localhost -p 5432)",
+      "Bash(lsof -iTCP:5432 -sTCP:LISTEN)",
+      "Bash(psql \"postgresql://postgres:postgres@localhost:5432/dorae\" -c \"SELECT 1;\")",
+      "Bash(brew install *)",
+      "Bash(brew services *)",
+      "Bash(/opt/homebrew/opt/postgresql@16/bin/pg_isready -h localhost -p 5432)"
     ]
   }
 }
