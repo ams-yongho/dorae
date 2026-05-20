@@ -13,7 +13,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 # prisma schema는 postinstall(`prisma generate`)에 필요
 COPY prisma ./prisma
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --config.node-linker=hoisted
 
 # ---------- builder ----------
 FROM node:22-alpine AS builder
