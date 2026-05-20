@@ -30,6 +30,7 @@ RUN pnpm build
 # ---------- runner ----------
 FROM node:22-alpine AS runner
 RUN apk add --no-cache tini openssl
+RUN corepack enable
 WORKDIR /app
 
 ENV NODE_ENV=production \
