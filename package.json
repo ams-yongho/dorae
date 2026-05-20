@@ -14,7 +14,15 @@
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "test": "node --import tsx --test 'src/**/*.test.ts'"
+    "test": "node --import tsx --test 'src/**/*.test.ts'",
+    "docker:precheck": "bash scripts/docker-precheck.sh",
+    "docker:secrets": "bash scripts/docker-secrets.sh",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f --tail=100",
+    "docker:verify": "bash scripts/docker-verify.sh",
+    "docker:seed": "docker compose exec app pnpm db:seed",
+    "docker:restart": "docker compose restart"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
