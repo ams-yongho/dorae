@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dorae-app:local
+    env_file: .env
+    environment:
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  cron:
+    build:
+      context: ./docker/cron
+    image: dorae-cron:local
+    env_file: .env
+    environment:
+      APP_URL: http://app:3000
+      TZ: Asia/Seoul
+    depends_on:
+      - app
+    restart: unless-stopped

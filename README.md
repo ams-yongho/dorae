@@ -59,3 +59,65 @@ DB를 재검증하기 때문).
 curl -X POST https://<your-host>/api/cron/notify \
   -H "Authorization: Bearer $CRON_SECRET"
 ```
+
+---
+
+## 로컬 도커 배포 (사내 상시 가동용)
+
+호스트 머신에서 `docker compose`로 띄워 24/7 가동한다. 데이터는 **호스트의 기존 Postgres**에 그대로 쌓인다.
+
+### 사전 조건
+
+1. Docker Desktop(macOS) 또는 Docker Engine + compose v2 설치.
+2. 호스트 Postgres에 `dorae` DB와 접속 가능한 유저 준비.
+   ```bash
+   createdb dorae
+   createuser -P dorae   # 패스워드 입력
+   ```
+3. 호스트 Postgres가 **도커 브리지에서 접속 가능**해야 한다. Postgres.app/Homebrew 기본 설치는 `localhost`만 듣고 있어 도커에서 접속이 막힌다. 1회 설정:
+   - `postgresql.conf`: `listen_addresses = '*'`
+   - `pg_hba.conf`에 한 줄 추가:
+     ```
+     host  all  all  127.0.0.0/8     scram-sha-256
+     host  all  all  172.16.0.0/12   scram-sha-256
+     ```
+   - Postgres 재시작 (`brew services restart postgresql@16` 등).
+4. 호스트에서 접속 확인:
+   ```bash
+   psql "postgresql://dorae:PASSWORD@127.0.0.1:5432/dorae" -c '\conninfo'
+   ```
+
+### 환경 변수
+
+```bash
+cp .env.docker.example .env
+# .env 열어서 DATABASE_URL, NEXTAUTH_SECRET, SLACK_*, ADMIN_EMAILS, CRON_SECRET 채우기
+```
+
+### 기동
+
+```bash
+docker compose up -d --build
+docker compose logs -f app
+```
+
+브라우저: http://localhost:3000
+
+### 운영 명령
+
+| 명령 | 동작 |
+|---|---|
+| `docker compose up -d --build` | 빌드 + 백그라운드 기동 |
+| `docker compose logs -f app` | 앱 로그 |
+| `docker compose logs -f cron` | 크론 로그 (15분마다 호출 흔적) |
+| `docker compose exec app sh` | app 컨테이너 진입 |
+| `docker compose exec app pnpm db:seed` | 시드 수동 1회 |
+| `docker compose restart app` | app만 재기동 |
+| `docker compose down` | 정지 (DB는 호스트라 영향 없음) |
+| `git pull && docker compose up -d --build` | 코드 갱신 후 재배포 |
+
+### 트러블슈팅
+
+- **`prisma migrate deploy` 실패 (`P1001` 등)**: 호스트 Postgres가 도커 브리지를 안 듣는다. 위 사전 조건 3번 재확인.
+- **Slack 로그인 후 redirect 오류**: Slack 앱의 OAuth Redirect URL에 `http://localhost:3000/api/auth/callback/slack` 등록 필요.
+- **`/api/cron/notify`가 401**: `.env`의 `CRON_SECRET`이 비었거나 앱/cron 컨테이너에 다른 값이 들어갔다. `docker compose up -d`로 양쪽 모두 재기동.

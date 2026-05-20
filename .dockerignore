@@ -1,0 +1,38 @@
+# git
+.git
+.gitignore
+
+# deps & build outputs
+node_modules
+.next
+out
+build
+coverage
+
+# env
+.env
+.env.*
+!.env.docker.example
+
+# editor / OS
+.DS_Store
+*.tsbuildinfo
+.vscode
+.idea
+
+# docs/spec/claude
+docs
+.claude
+.serena
+AGENTS.md
+CLAUDE.md
+README.md
+
+# tests/dev-only
+*.test.ts
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+.pnpm-debug.log*
