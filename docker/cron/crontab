@@ -1,0 +1,1 @@
+*/15 * * * * /usr/local/bin/notify.sh >> /proc/1/fd/1 2>&1
