@@ -68,7 +68,7 @@ else
   fail ".env에서 비어있는 키: ${MISSING[*]}" ".env 파일을 열어 해당 키를 채우세요"
 fi
 
-echo "==> 6. 도커 → 호스트 Postgres 접속"
+echo "==> 6. DATABASE_URL 호스트 부분 검증"
 DATABASE_URL_LINE="$(grep -E '^DATABASE_URL=' .env | head -1)"
 DATABASE_URL_VALUE="${DATABASE_URL_LINE#DATABASE_URL=}"
 # 앞뒤 따옴표 제거
@@ -77,6 +77,22 @@ DATABASE_URL_VALUE="${DATABASE_URL_VALUE#\"}"
 DATABASE_URL_VALUE="${DATABASE_URL_VALUE%\'}"
 DATABASE_URL_VALUE="${DATABASE_URL_VALUE#\'}"
 
+# postgresql://USER:PW@HOST:PORT/DB 에서 HOST만 추출
+DB_HOST="$(printf '%s' "$DATABASE_URL_VALUE" | sed -E 's|^[a-z]+://[^@]+@([^:/]+).*$|\1|')"
+
+case "$DB_HOST" in
+  localhost|127.0.0.1|::1|0.0.0.0)
+    fail "DATABASE_URL의 호스트가 '$DB_HOST'" "도커 컨테이너 안의 '$DB_HOST'는 호스트 머신이 아니라 컨테이너 자기 자신을 가리킵니다. .env에서 호스트 부분을 'host.docker.internal'로 변경하세요"
+    ;;
+  "")
+    fail "DATABASE_URL에서 호스트를 파싱하지 못함" "DATABASE_URL이 'postgresql://USER:PW@HOST:PORT/DB' 형식인지 확인"
+    ;;
+  *)
+    pass "호스트: $DB_HOST"
+    ;;
+esac
+
+echo "==> 7. 도커 → 호스트 Postgres 접속"
 if docker run --rm \
     --add-host=host.docker.internal:host-gateway \
     -e PGCONNECT_TIMEOUT=5 \
