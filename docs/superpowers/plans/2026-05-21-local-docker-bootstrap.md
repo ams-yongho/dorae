@@ -14,7 +14,7 @@
 
 - [ ] **자동:** `pnpm docker:precheck`
 
-기대 결과: 6단계 모두 `[PASS]` + 마지막에 `OK: 'pnpm docker:up'로 기동할 수 있습니다.`
+기대 결과: 7단계 모두 `[PASS]` + 마지막에 `OK: 'pnpm docker:up'로 기동할 수 있습니다.`
 
 실패한 단계가 있으면 그 단계의 안내(`→ ...`)를 따라 해결하고 다시 실행.
 
@@ -155,7 +155,7 @@ openssl rand -base64 32   # CRON_SECRET
   pnpm docker:precheck
   ```
 
-  6단계 모두 `[PASS]`여야 다음 섹션 진행.
+  7단계 모두 `[PASS]`여야 다음 섹션 진행.
 
 ---
 
@@ -226,6 +226,7 @@ openssl rand -base64 32   # CRON_SECRET
     psql "postgresql://dorae:PW@host.docker.internal:5432/dorae" -c 'SELECT 1'
   ```
 - 흔한 원인:
+  - **`DATABASE_URL`의 호스트가 `localhost` / `127.0.0.1`** — 도커 컨테이너 안의 `localhost`는 컨테이너 자기 자신이라 호스트 Postgres에 닿지 못함. `host.docker.internal`로 변경 (`pnpm docker:precheck` 6단계에서 검출됨)
   - `listen_addresses = '*'` 미적용
   - `pg_hba.conf`에 `172.16.0.0/12` 라인 누락
   - Postgres 재시작 누락
